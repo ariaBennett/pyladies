@@ -83,13 +83,17 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   // Publications
   Meteor.publish("messages", function() {
-    return Messages.find({
-      "chatroom._id": Meteor.users.findOne(this.userId).chatroom._id
+    if (this.userId) {
+      return Messages.find({
+        "chatroom._id": Meteor.users.findOne(this.userId).chatroom._id
       });
+    }
   });
   Meteor.publish("currentChatroom", function() {
-    //TODO make this work with multiple chatrooms
-    return Chatrooms.find(Meteor.users.findOne(this.userId).chatroom);
+    if (this.userId) {
+      //TODO make this work with multiple chatrooms
+      return Chatrooms.find(Meteor.users.findOne(this.userId).chatroom);
+    }
   });
   // Server Methods
 
