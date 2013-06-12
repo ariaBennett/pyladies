@@ -21,21 +21,27 @@
       </div> <!--/span6--!>
       <div class="span6" id="skulptPanel">
         <form>
-        <textarea class="skulptbox" cols="40 "rows="10">print "hi"</textarea><br />
+        <textarea class="skulptbox" rows="10">import turtle
+ 
+t = turtle.Turtle()
+t.forward(100)
+ 
+for i in range(100):
+    print "Hello World"
+</textarea><br />
         </form>
-        <pre id="skulptOutput"></pre>
+        <pre id="skulptOutput" class="pre-scrollable"></pre>
         <div class="row-fluid">
-          <div class="span11">
-            <input class="skulptInput" type="text"></input>
-          </div> <!--/span11--!>
-          <div class="span1">
+          <div class="span1 offset5">
             <button class="btn-small" type="button" id="skulptInputRunButton">Run</button>
-          </div> <!--/span1--!>
+          </div> <!--/span1 offset5--!>
         </div> <!--/row-fluid--!>
       </div> <!--/span6--!>
     </div> <!--/span12--!>
+  <div class="span1 offset4">
+    <canvas id="skulptCanvas"></canvas>
+  </div>
   </div> <!--/row-fluid--!>
 
   <!--temporary skulpt canvas location--!>
-  <canvas id="skulptCanvas"></canvas>
 </body>

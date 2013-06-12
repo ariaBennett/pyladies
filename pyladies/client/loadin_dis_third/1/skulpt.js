@@ -19,13 +19,13 @@ Meteor.startup(function() {
       // configure the output function
       // call Sk.importMainWithBody()
       function runit() {
-        var prog = document.getElementsByClassName("skulptbox").value;
+        var prog = document.getElementsByClassName("skulptbox")[0].value;
         var mypre = document.getElementById("skulptOutput");
         mypre.innerHTML = "";
         Sk.canvas = "skulptCanvas";
         Sk.pre = "skulptOutput";
         Sk.configure({output:outf, read:builtinRead});
-        eval(Sk.importMainWithBody("<stdin>", false, prog));
+        Sk.importMainWithBody("<stdin>", false, prog);
       } 
       runit();
     }

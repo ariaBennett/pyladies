@@ -13,10 +13,8 @@
   width: 100%;
   height: 100%;
 }
-.skulptInput {
-  width: 100%;
-}
 
 #skulptPanel {
-  float: right;
+}
+.pre-scrollable {
 }
