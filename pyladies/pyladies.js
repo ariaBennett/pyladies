@@ -6,7 +6,7 @@ Messages = new Meteor.Collection("messages");
 Meteor.methods({
   addMessage: function(message) {
     if (Meteor.isServer) {
-      if (Meteor.user()) {
+      if (Meteor.user() && message) {
         Messages.insert({
           userId: this.userId,
           //TODO: Make this a user chosen name.
@@ -54,13 +54,28 @@ if (Meteor.isClient) {
         });
       }
     });
+    // Pressing enter straight in input box
     $(".chatInput").keypress(function (event) {
       if (event.keyCode === 13) {
         Meteor.call("addMessage", 
           $(".chatInput")[0].value);
           $(".chatInput")[0].value = "";
-
       }
+    });
+    // Using the send button
+    // enter
+    $("#chatInputSendButton").keypress(function (event) {
+      if (event.keyCode === 13) {
+        Meteor.call("addMessage", 
+          $(".chatInput")[0].value);
+          $(".chatInput")[0].value = "";
+      }
+    });
+    // click 
+    $("#chatInputSendButton").click(function (event) {
+      Meteor.call("addMessage", 
+        $(".chatInput")[0].value);
+        $(".chatInput")[0].value = "";
     });
   });
 }
