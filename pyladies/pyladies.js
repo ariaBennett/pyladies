@@ -41,8 +41,10 @@ if (Meteor.isClient) {
         mypre.innerHTML = mypre.innerHTML + text;
       }
       function builtinRead(x) {
-        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-        throw "File not found: '" + x + "'";
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+          throw "File not found: '" + x + "'";
+        }
+
         return Sk.builtinFiles["files"][x];
       }
        
@@ -58,10 +60,16 @@ if (Meteor.isClient) {
         Sk.canvas = "skulptCanvas";
         Sk.pre = "skulptOutput";
         Sk.configure({output:outf, read:builtinRead});
-        Sk.importMainWithBody("<stdin>", false, prog);
+        try {
+          Sk.importMainWithBody("<stdin>", false, prog);
+        }
+        catch (err) {
+          outf(err.tp$str().v);
+        }
       } 
       runit();
     }
+    //TODO ensure autorun isn't unnecessary 
     Deps.autorun(function() {
       if (Meteor.user()) {
         Meteor.subscribe("messages");
