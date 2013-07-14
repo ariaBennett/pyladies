@@ -10,7 +10,7 @@ Meteor.methods({
         Messages.insert({
           userId: this.userId,
           //TODO: Make this a user chosen name.
-          username: Meteor.user(),
+          username: Meteor.user().username,
           message: message,
           timestamp: new Date(),
           chatroom: Meteor.user().chatroom
@@ -18,6 +18,7 @@ Meteor.methods({
         //console.log(Messages.find().fetch());
       }
     }
+    // Handle attempts to chat when no user is detected.
     if (Meteor.isClient) {
       if (!Meteor.user()) {
         alert("Please Sign-In first.");
@@ -85,7 +86,7 @@ if (Meteor.isClient) {
             var message = Messages.findOne(id); 
             $(".chatbox")[0].value +="[" 
               + message.timestamp.toLocaleTimeString() 
-              + "] " + message.username.username + ": " 
+              + "] " + message.username + ": " 
               + message.message + "\n";
             $(".chatbox")[0].scrollTop = $(".chatbox")[0].scrollHeight;
           }
@@ -118,13 +119,21 @@ if (Meteor.isClient) {
     // run button
     // enter
     $("#skulptInputRunButton").keypress(function (event) {
-      if (event.keyCode === 13) {
+      if (!Meteor.user()) {
+        alert("Please Sign-In first.");
+      }
+      else if (event.keyCode === 13) {
         runSkulpt();
       }
     });
     // click 
     $("#skulptInputRunButton").click(function (event) {
-        runSkulpt();
+      if (!Meteor.user()) {
+        alert("Please Sign-In first.");
+      }
+      else {
+      runSkulpt();
+      }
     });
   });
 }
