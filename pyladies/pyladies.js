@@ -1,5 +1,6 @@
 Chatrooms = new Meteor.Collection("chatrooms");
 Messages = new Meteor.Collection("messages");
+Code = new Meteor.Collection("code");
 
 
 // Shared Methods
@@ -23,6 +24,13 @@ Meteor.methods({
       if (!Meteor.user()) {
         alert("Please Sign-In first.");
       }
+    }
+  },
+
+  updateCode: function(code) {
+    if (Meteor.isServer) {
+      Code.update(code._id, {$set: {code: code.code}});
+      console.log(Code.find().fetch())
     }
   }
 });
@@ -74,13 +82,18 @@ if (Meteor.isClient) {
     Deps.autorun(function() {
       if (Meteor.user()) {
         Meteor.subscribe("messages");
+        Meteor.subscribe("code");
         Meteor.subscribe("currentChatroom", function() {
           $(".chatbox")[0].value = "Now chatting in " 
           + Chatrooms.findOne().name + ".\n";
         });
         Session.set("messages", Messages.find());
+        Session.set("code", Code.findOne());
         //TODO start here
         //TODO make this work with multiple chatrooms
+        if (Code.findOne()) {
+          $(".skulptbox")[0].value = Session.get('code').code;
+        }
         Messages.find().observeChanges({
           added: function(id) {
             var message = Messages.findOne(id); 
@@ -123,6 +136,11 @@ if (Meteor.isClient) {
         alert("Please Sign-In first.");
       }
       else if (event.keyCode === 13) {
+
+        tmpCode = Session.get('code');
+        tmpCode.code = $(".skulptbox")[0].value;
+        Session.set('code', tmpCode);
+        Meteor.call('updateCode', Session.get('code'));
         runSkulpt();
       }
     });
@@ -132,7 +150,11 @@ if (Meteor.isClient) {
         alert("Please Sign-In first.");
       }
       else {
-      runSkulpt();
+        tmpCode = Session.get('code');
+        tmpCode.code = $(".skulptbox")[0].value;
+        Session.set('code', tmpCode);
+        Meteor.call('updateCode', Session.get('code'));
+        runSkulpt();
       }
     });
   });
@@ -153,13 +175,27 @@ if (Meteor.isServer) {
       return Chatrooms.find(Meteor.users.findOne(this.userId).chatroom);
     }
   });
+  // code
+  Meteor.publish("code", function() {
+    if (this.userId) {
+      return Code.find({
+        "chatroomId": Meteor.users.findOne(this.userId).chatroom._id
+      });
+    }
+  });
+
+
   // Server Methods
 
   Meteor.startup(function () {
     // Init chatrooms:
     if (!Chatrooms.findOne({name: "pyladiessf"})) {
-      Chatrooms.insert({
+      var chatroomId = Chatrooms.insert({
         name: "pyladiessf"
+      });
+      Code.insert({
+        code: "print \"Hello World\"",
+        chatroomId: chatroomId
       });
     }
   });
